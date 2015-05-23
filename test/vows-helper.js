@@ -24,7 +24,11 @@ var respondsWith = function(status, solrPath) {
   return context;
 }
 
-exports.testProxyBatch = function(proxyUrl) {
+exports.testProxyBatch = function(proxyUrl, options) {
+  // options:
+  //    mocked: set to true to run tests that depend on the Solr proxy being mocked
+  options = options || {};
+
   var proxyRespondsWith = function(status) {
     return respondsWith(status, proxyUrl);
   }
@@ -35,6 +39,22 @@ exports.testProxyBatch = function(proxyUrl) {
     'GET  update':                  proxyRespondsWith(403),
     'GET  select?qt=/update':       proxyRespondsWith(403),
     'GET  select?stream.url=EVIL':  proxyRespondsWith(403),
-    'GET  select?stream.body=EVIL': proxyRespondsWith(403)
+    'GET  select?stream.body=EVIL': proxyRespondsWith(403),
+    'GET  select?q=2':              proxyRespondsWith(200),
+    'GET  select?q=3':              proxyRespondsWith(200),
+    'GET  select?q=4':              proxyRespondsWith(200),
+    'GET  select?q=5':              proxyRespondsWith(200),
+    'GET  select?q=6':              proxyRespondsWith(200),
+    'GET  select?q=7':              proxyRespondsWith(200),
+    'GET  select?q=8':              proxyRespondsWith(200),
+    'GET  select?q=9':              proxyRespondsWith(200),
+    'GET  select?q=10':             proxyRespondsWith(200),
+    'GET  select?q=11':             proxyRespondsWith(200)
   };
+  
+  if (options.mocked) {
+    rv['GET  select?proxyError=true'] = proxyRespondsWith(502);
+  }
+
+  return rv;
 }
