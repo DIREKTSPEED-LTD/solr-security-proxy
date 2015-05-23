@@ -59,13 +59,13 @@ var mergeDefaultOptions = function(defaultOptions, options) {
 
 SolrSecurityProxy.createServer = function(options) {
   var options = mergeDefaultOptions(defaultOptions, options);
-
   // console.log(options);
 
+  var proxyErrorListenerYetToBeAdded = true;
+  
   // adapted from http://git.io/k5dCxQ
   var server = httpProxy.createServer(function(request, response, proxy) {
-    if (options.validator(request, options)) {
-      proxy.proxyRequest(request, response, options.backend);
+  if (proxyErrorListenerYetToBeAdded) {
       proxy.on('proxyError', function(err, req, res) {
         res.writeHead(502, {  'Content-Type': 'text/plain' });
         res.end('Proxy error: ' + err);
