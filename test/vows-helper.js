@@ -32,7 +32,7 @@ exports.testProxyBatch = function(proxyUrl, options) {
   var proxyRespondsWith = function(status) {
     return respondsWith(status, proxyUrl);
   }
-  return {
+  var rv = {
     'POST select':                  proxyRespondsWith(403),
     'GET  select?q=balloon':        proxyRespondsWith(200),
     'GET  admin':                   proxyRespondsWith(403),
